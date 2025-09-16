@@ -39,35 +39,34 @@ function M.is_make_project()
     return vim.fn.glob(MAKEFILE_NAME) ~= ""
 end
 
-function M.set_build_type(build_type)
-    state.build_type = build_type
+function M.get_build_types()
+    return state.build_types
 end
 
 function M.get_build_type()
     return state.build_type
 end
 
-function M.get_build_types()
-    return state.build_types
+function M.set_build_type(build_type)
+    state.build_type = build_type
 end
 
-function M.set_build_target(build_target)
-    state.build_target = build_target
+function M.get_build_targets()
+    local output = vim.fn.systemlist("make targets")
+
+    local build_targets = {}
+    for i=1, #output do
+        table.insert(build_targets, output[i])
+    end
+    return build_targets
 end
 
 function M.get_build_target()
     return state.build_target
 end
 
-function M.make_clean()
-    internal._execute_command("make clean")
-end
-
-function M.build_project()
-    local command = internal._create_build_command(
-        M.get_build_type()
-    )
-    internal._execute_command(command)
+function M.set_build_target(build_target)
+    state.build_target = build_target
 end
 
 function M.get_target_binary_path(build_target_name)
@@ -82,19 +81,20 @@ function M.get_target_binary_path(build_target_name)
     return string.format("%s/%s", vim.fn.getcwd(), build_target_name)
 end
 
+function M.build_project()
+    local command = internal._create_build_command(
+        M.get_build_type()
+    )
+    internal._execute_command(command)
+end
+
 function M.run_build_target()
     local command = M.get_target_binary_path(M.get_build_target())
     internal._execute_command(command)
 end
 
-function M.get_build_target_names()
-    local output = vim.fn.systemlist("make targets")
-
-    local build_targets = {}
-    for i=1, #output do
-        table.insert(build_targets, output[i])
-    end
-    return build_targets
+function M.make_clean()
+    internal._execute_command("make clean")
 end
 
 return M
