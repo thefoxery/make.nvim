@@ -89,7 +89,7 @@ function M.set_notification_enabled(notification, enabled)
 end
 
 function M.make_clean()
-    print("not yet implemented")
+    internal._execute_command("make clean")
 end
 
 function M.build_project()
@@ -100,7 +100,6 @@ function M.build_project()
 end
 
 function M.get_target_binary_path(build_target_name)
-    print("build_target_name: " .. build_target_name)
     if M.get_build_target() == "" then
         vim.notify("no make build target set", vim.log.levels.ERROR)
         return
