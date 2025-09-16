@@ -9,10 +9,6 @@ local MAKEFILE_NAME = "Makefile"
 local default_opts = {
     build_types = { "debug", "release" },
     build_type = "debug",
-    notifications = {
-        ["on_build_target_changed"] = true,
-        ["on_build_type_changed"] = true,
-    },
 }
 
 local resolve = function(opt)
@@ -23,24 +19,10 @@ local resolve = function(opt)
     end
 end
 
-function M.setup(opts)
-    opts = opts or {}
-    state.build_types = resolve(opts.build_types) or default_opts.build_types
-    state.build_type = resolve(opts.default_build_type) or default_opts.build_type
+function M.setup(user_opts)
+    state.build_types = resolve(user_opts.build_types) or default_opts.build_types
+    state.build_type = resolve(user_opts.default_build_type) or default_opts.build_type
     state.build_target = ""
-    state.notifications = state.notifications or {}
-
-    opts.notifications = resolve(opts.notifications) or default_opts.notifications
-    for notification, enabled in pairs(opts.notifications) do
-        state.notifications[notification] = enabled
-    end
-
-    --[[
-    opts.user_args = resolve(opts.user_args) or {}
-    for _, arg in ipairs(opts.user_args) do
-        state.user_args = string.format("%s %s", state.user_args, arg)
-    end
-    --]]
 
     vim.api.nvim_create_user_command("MakeBuild", function()
         M.build_project()
@@ -59,9 +41,6 @@ end
 
 function M.set_build_type(build_type)
     state.build_type = build_type
-    if state.notifications.on_build_type_changed then
-        vim.notify(string.format("build type set to '%s'", build_type), vim.log.levels.INFO)
-    end
 end
 
 function M.get_build_type()
@@ -74,18 +53,10 @@ end
 
 function M.set_build_target(build_target)
     state.build_target = build_target
-    if state.notifications.on_build_target_changed then
-        vim.notify(string.format("build target changed to '%s'", build_target), vim.log.levels.INFO)
-    end
 end
 
 function M.get_build_target()
     return state.build_target
-end
-
-function M.set_notification_enabled(notification, enabled)
-    state.notifications = state.notifications or {}
-    state.notifications[notification] = enabled
 end
 
 function M.make_clean()
