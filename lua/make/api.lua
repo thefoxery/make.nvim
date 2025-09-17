@@ -4,24 +4,14 @@ local state = require("make.state")
 
 local M = {}
 
-local MAKEFILE_NAME = "Makefile"
-
 local default_opts = {
     build_types = { "debug", "release" },
     build_type = "debug",
 }
 
-local resolve = function(opt)
-    if type(opt) == "function" then
-        return opt()
-    else
-        return opt
-    end
-end
-
 function M.setup(user_opts)
-    state.build_types = resolve(user_opts.build_types) or default_opts.build_types
-    state.build_type = resolve(user_opts.default_build_type) or default_opts.build_type
+    state.build_types = internal._resolve(user_opts.build_types) or default_opts.build_types
+    state.build_type = internal._resolve(user_opts.default_build_type) or default_opts.build_type
     state.build_target = ""
 
     vim.api.nvim_create_user_command("MakeBuild", function()
@@ -36,11 +26,7 @@ function M.is_setup()
 end
 
 function M.is_project_directory()
-    return M.is_make_project()
-end
-
-function M.is_make_project()
-    return vim.fn.glob(MAKEFILE_NAME) ~= ""
+    return vim.fn.glob(internal._MAKEFILE_NAME) ~= ""
 end
 
 function M.get_build_types()
