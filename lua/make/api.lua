@@ -35,6 +35,10 @@ function M.is_setup()
     return state.is_setup
 end
 
+function M.is_project_directory()
+    return M.is_make_project()
+end
+
 function M.is_make_project()
     return vim.fn.glob(MAKEFILE_NAME) ~= ""
 end
