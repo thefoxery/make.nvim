@@ -13,6 +13,9 @@ local default_opts = {
 }
 
 function M.setup(user_opts)
+    user_opts = user_opts or {}
+    user_opts.make = user_opts.make or {}
+
     state.build_types = internal._resolve(user_opts.build_types) or default_opts.build_types
     state.build_type = internal._resolve(user_opts.default_build_type) or default_opts.build_type
     state.make = state.make or {}
