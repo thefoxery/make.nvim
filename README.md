@@ -5,6 +5,7 @@
 
 Provide a basic API for Make functionality
 - build_project()
+- make_clean()
 - set_build_type(build_type)
 - set_build_target(build_target)
 - get_target_binary_path(build_target)
@@ -50,10 +51,14 @@ be introduced to lock down stability.
 require("make").setup({
     build_types = { "debug", "release" }
     build_type = "debug", -- default to this if build system reports ""
+    make = {
+        targets_target_name = "targets", -- the Makefile target that provides the build targets list
+    },
 })
 ```
 
-The plugin uses a 'targets' build target to get a list of the available build targets from Make.
+Note the 'targets' build target that provides a list of the available build targets using Make.
+
 Add the following to your Makefile:
 
 ```
@@ -64,7 +69,9 @@ targets:
 	@for t in $(TARGETS); do echo $$t; done
 ```
 
-Note that my build output directory is set to ./dist and * refers to debug/release
+Here my build output directory is set to ./dist and * refers to debug/release folder
+
+In case you need to use another target name for this, make sure to pass the new name in your setup()
 
 ## Example DAP configuration
 
@@ -86,5 +93,4 @@ dap.configurations.cpp = {
 ```
 
 ## Limitations / Known issues
-
 

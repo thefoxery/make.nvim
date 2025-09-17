@@ -7,11 +7,16 @@ local M = {}
 local default_opts = {
     build_types = { "debug", "release" },
     build_type = "debug",
+    make = {
+        targets_target_nane = "targets",
+    },
 }
 
 function M.setup(user_opts)
     state.build_types = internal._resolve(user_opts.build_types) or default_opts.build_types
     state.build_type = internal._resolve(user_opts.default_build_type) or default_opts.build_type
+    state.make = state.make or {}
+    state.make.targets_target_name = internal._resolve(user_opts.make.targets_target_name) or default_opts.make.targets_target_name
     state.build_target = ""
 
     vim.api.nvim_create_user_command("MakeBuild", function()
@@ -42,7 +47,7 @@ function M.set_build_type(build_type)
 end
 
 function M.get_build_targets()
-    local output = vim.fn.systemlist("make targets")
+    local output = vim.fn.systemlist(string.format("make %s", state.make.targets_target_name))
 
     local build_targets = {}
     for i=1, #output do
