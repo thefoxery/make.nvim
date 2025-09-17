@@ -53,6 +53,19 @@ require("make").setup({
 })
 ```
 
+The plugin uses a 'targets' build target to get a list of the available build targets from Make.
+Add the following to your Makefile:
+
+```
+TARGETS := $(wildcard dist/*/${TARGET_NAME})
+
+# list build targets for neovim
+targets:
+	@for t in $(TARGETS); do echo $$t; done
+```
+
+Note that my build output directory is set to ./dist and * refers to debug/release
+
 ## Example DAP configuration
 
 ```
@@ -74,16 +87,4 @@ dap.configurations.cpp = {
 
 ## Limitations / Known issues
 
-The plugin uses a 'targets' build target to get a list of the available build targets from Make.
-Add the following to your Makefile:
-
-```
-TARGETS := $(wildcard dist/*/${TARGET_NAME})
-
-# list build targets for neovim
-targets:
-	@for t in $(TARGETS); do echo $$t; done
-```
-
-Note that my build output directory is set to ./dist and * refers to debug/release
 
