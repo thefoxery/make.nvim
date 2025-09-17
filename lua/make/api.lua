@@ -1,4 +1,6 @@
 
+local PLUGIN_NAME = "make.nvim"
+
 local internal = require("make.internal")
 local state = require("make.state")
 
@@ -8,7 +10,7 @@ local default_opts = {
     build_types = { "debug", "release" },
     build_type = "debug",
     make = {
-        targets_target_nane = "targets",
+        targets_target_name = "targets",
     },
 }
 
@@ -50,6 +52,10 @@ function M.set_build_type(build_type)
 end
 
 function M.get_build_targets()
+    if state.make == nil or state.make.targets_target_name == nil then
+        vim.notify(string.format("[%s] Trying to get build targets but the specificed target name '%s' is invalid", PLUGIN_NAME), vim.log.levels.ERROR)
+        return {}
+    end
     local output = vim.fn.systemlist(string.format("make %s", state.make.targets_target_name))
 
     local build_targets = {}
