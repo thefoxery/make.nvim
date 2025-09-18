@@ -39,6 +39,10 @@ function M.is_project_directory()
     return vim.fn.glob(internal._MAKEFILE_NAME) ~= ""
 end
 
+function M.get_build_system_type()
+    return "Make"
+end
+
 function M.get_build_types()
     return state.build_types
 end
