@@ -62,6 +62,23 @@ function M.get_build_targets()
     end
     local output = vim.fn.systemlist(string.format("make %s", state.make.targets_target_name))
 
+    local no_rule = false
+    local exit_code = vim.v.shell_error
+    if exit_code ~= 0 then
+        for _, line in ipairs(output) do
+            if line:match("No rule to make target") then
+                no_rule = true
+                break
+            end
+        end
+        if no_rule then
+            print(string.format("[%s] Plugin needs a build target named '%s' to get a list of available build targets", PLUGIN_NAME, state.make.targets_target_name))
+        else
+            print(string.format("make failed with exit code '%d'", exit_code))
+            print(vim.inspect(output))
+        end
+    end
+
     local build_targets = {}
     for i=1, #output do
         table.insert(build_targets, output[i])
