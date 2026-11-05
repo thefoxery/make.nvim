@@ -51,6 +51,7 @@ be introduced to lock down stability.
 require("make").setup({
     build_types = { "debug", "release" }
     build_type = "debug", -- default to this if build system reports ""
+    persist = true, -- remember the build type and target per directory (cwd) between sessions
     make = {
         targets_target_name = "targets", -- the Makefile target that provides the build targets list
     },
